@@ -7,10 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface MessageRepository extends JpaRepository<Message, Long>{
-    List<Message> findTop20ByOrderByTimestampDesc();
-
-    Message getMessageById(Long id); // Renamed method to findByMessageId
-
-
+public interface MessageRepository extends JpaRepository<Message, Long> {
+    List<Message> findTop10ByOrderByTimestampDesc();
 }

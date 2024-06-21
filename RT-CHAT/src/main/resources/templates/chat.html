@@ -239,6 +239,46 @@
         .popup-button:focus {
             outline: none;
         }
+        .reply-context {
+            display: flex;
+            align-items: center;
+            background-color: #ffffff;
+            color: #000000;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .cancel-reply {
+            background-color: #ff6b6b;
+            border: none;
+            color: #ffffff;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .cancel-reply i {
+            font-size: 14px;
+        }
+
+        .cancel-reply:hover {
+            background-color: #ff4c4c;
+        }
+    </style>
+</head>
+<body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Other head content -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* CSS styles here */
     </style>
 </head>
 <body>
@@ -261,6 +301,10 @@
         </div>
     </div>
     <div class="message-input-container">
+        <div id="reply-context" class="reply-context" style="display: none;">
+            <span id="reply-message"></span>
+            <button onclick="cancelReply()" class="cancel-reply"><i class="fas fa-times"></i></button>
+        </div>
         <input id="content" type="text" class="message-input" placeholder="Enter a message">
         <button class="heart-button animate__animated animate__fadeInRight" onclick="sendHeart()"><i class="fas fa-heart"></i></button>
         <button class="send-button animate__animated animate__fadeInRight" onclick="sendMessage()">Send</button>
@@ -269,9 +313,12 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="path/to/your/javascript.js"></script>
+
 <script>
     var stompClient = null;
     var username = null;
+    var repliedMessageId = null;
 
     function setUsername() {
         var usernameInput = document.getElementById('username-input').value.trim();
@@ -300,7 +347,7 @@
     }
 
     function fetchLast10Messages() {
-        fetch('/chat') // Assuming this endpoint returns the last 10 messages
+        fetch('/api/messages/last10')
             .then(response => response.json())
             .then(messages => {
                 messages.reverse(); // Reverse to show latest messages first
@@ -309,15 +356,37 @@
             .catch(error => console.error('Error fetching messages:', error));
     }
 
+    function replyToMessage(messageId, messageContent) {
+        var replyContext = document.getElementById('reply-context');
+        var replyMessage = document.getElementById('reply-message');
+        replyContext.style.display = 'flex';
+        replyMessage.textContent = `Replying to: ${messageContent}`;
+
+        // Set repliedMessageId in the message input field
+        document.getElementById('content').dataset.repliedMessageId = messageId;
+    }
+
+    function cancelReply() {
+        var replyContext = document.getElementById('reply-context');
+        var replyMessage = document.getElementById('reply-message');
+        replyContext.style.display = 'none';
+        replyMessage.textContent = '';
+
+        // Remove repliedMessageId from the message input field
+        delete document.getElementById('content').dataset.repliedMessageId;
+    }
+
     function sendMessage() {
         var content = document.getElementById('content').value.trim();
         if (username && content) {
             var message = {
                 username: username,
-                content: content
+                content: content,
+                repliedMessageId: document.getElementById('content').dataset.repliedMessageId // Include repliedMessageId
             };
             stompClient.send("/app/chat", {}, JSON.stringify(message));
             document.getElementById('content').value = '';
+            cancelReply(); // Reset reply context
         }
     }
 
@@ -328,6 +397,8 @@
         };
         stompClient.send("/app/chat", {}, JSON.stringify(heartMessage));
     }
+
+
 
     document.getElementById('content').addEventListener('keydown', function (e) {
         if (e.keyCode === 13) {
@@ -349,27 +420,41 @@
         var avatarColor = stringToColor(message.username);
         var avatarInitial = message.username.charAt(1).toUpperCase();
 
-        messageElement.innerHTML =`
-            <div class="chat-message-avatar">
-                <div class="avatar" style="background-color: ${avatarColor};">${avatarInitial}</div>
-            </div>
+        var repliedContent = '';
+        if (message.repliedMessageId) {
+            // Find the original message content to display as replied content
+            var originalMessage = document.querySelector(`[data-message-id="${message.repliedMessageId}"]`);
+            if (originalMessage) {
+                repliedContent = originalMessage.querySelector('.message-content').textContent;
+            }
+        }
 
-        <div class="message-content-wrapper">
-            <div>
-                <span class="username" style="color: ${avatarColor};">${message.username}</span> <span class="timestamp">${formattedTimestamp}</span>
-            </div>
-            <div class="message-content">${message.content}</div>
+        messageElement.innerHTML = `
+    <div class="chat-message-avatar">
+        <div class="avatar" style="background-color: ${avatarColor};">${avatarInitial}</div>
+    </div>
 
+    <div class="message-content-wrapper" data-message-id="${message.id}">
+        <div>
+            <span class="username" style="color: ${avatarColor};">${message.username}</span> <span class="timestamp">${formattedTimestamp}</span>
         </div>
-        `;
-
+        ${repliedContent ? `<div class="replied-content">Replying to: ${repliedContent}</div>` : ''}
+        <div class="message-content">${message.content}</div>
+        <div class="reply-icon" onclick="replyToMessage(${message.id}, '${message.content}')">
+            <i class="fas fa-reply"></i>
+        </div>
+    </div>
+    `;
 
         // Append message to the top (start) of chat box
         chatBox.insertAdjacentElement('afterbegin', messageElement);
 
+        // Scroll to the bottom of the chat box
         window.scrollTo(0, document.body.scrollHeight);
-
     }
+
+
+
 
     // Generate a unique color based on a string (username)
     function stringToColor(str) {
@@ -385,6 +470,7 @@
         }
         return color;
     }
+
     function formatTimestamp(timestamp) {
         var date = new Date(timestamp);
         var hours = date.getHours();
@@ -392,5 +478,6 @@
         return `${hours}:${minutes}`;
     }
 </script>
+
 </body>
 </html>

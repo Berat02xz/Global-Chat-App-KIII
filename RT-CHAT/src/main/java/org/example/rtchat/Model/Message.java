@@ -24,6 +24,8 @@ public class Message {
     @Column(name = "replied")
     private Long repliedMessageId; // Store the ID of the message being replied to
 
+    @Column(name = "avatar_url")
+    private String avatarUrl;
 
     public Message() {
     }

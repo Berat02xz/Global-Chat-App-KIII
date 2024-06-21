@@ -5,6 +5,7 @@ import org.example.rtchat.Repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,6 +19,14 @@ public class MessageService {
     }
 
     public Message getMessageById(Long id) {
-        return messageRepository.getMessageById(id); // Return the message if found, otherwise null
+        return messageRepository.findById(id).orElse(null); // Return the message if found, otherwise null
+    }
+
+    public List<Message> findLast10Messages() {
+        return messageRepository.findTop10ByOrderByTimestampDesc();
+    }
+
+    public Message saveMessage(Message message) {
+        return messageRepository.save(message);
     }
 }

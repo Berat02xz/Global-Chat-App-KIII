@@ -2,6 +2,7 @@ package org.example.rtchat.Controller;
 
 import org.example.rtchat.Model.Message;
 import org.example.rtchat.Repository.MessageRepository;
+import org.example.rtchat.Service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -13,35 +14,28 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Controller
-@RequestMapping("/chat")
+@RestController
+@RequestMapping("/api/messages")
 public class MessageController {
-    private final MessageRepository messageRepository;
-    private final SimpMessagingTemplate messagingTemplate;
+
+    private final MessageService messageService;
 
     @Autowired
-    public MessageController(MessageRepository messageRepository, SimpMessagingTemplate messagingTemplate) {
-        this.messageRepository = messageRepository;
-        this.messagingTemplate = messagingTemplate;
+    public MessageController(MessageService messageService) {
+        this.messageService = messageService;
     }
 
-    @GetMapping
-    public String getChatPage(Model model) {
-        List<Message> messages = messageRepository.findTop20ByOrderByTimestampDesc();
-        model.addAttribute("messages", messages);
-        return "chat";
+    @GetMapping("/last10")
+    public List<Message> getLast10Messages() {
+        return messageService.findLast10Messages();
     }
 
-    @PostMapping("/send")
-    @MessageMapping("/chat") // Handles WebSocket messages from "/app/chat"
-    @SendTo("/topic/messages") // Sends messages to WebSocket topic "/topic/messages"
-    public Message sendMessage(@RequestBody Message message) {
+    @MessageMapping("/chat")
+    @SendTo("/topic/messages")
+    public Message sendMessage(Message message) {
         message.setTimestamp(LocalDateTime.now());
-        messageRepository.save(message);
-        List<Message> messages = messageRepository.findTop20ByOrderByTimestampDesc();
-        if (messages.size() > 20) {
-            messageRepository.deleteAll(messages.subList(20, messages.size()));
-        }
-        return message;
+        // Ensure repliedMessageId is properly set in the Message object
+        return messageService.saveMessage(message);
     }
+
 }

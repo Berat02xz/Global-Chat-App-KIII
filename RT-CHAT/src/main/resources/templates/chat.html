@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" class="theme-dark">
+<head>
+    <meta charset="UTF-8">
+    <title>Global Chat</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Animate.css for animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #111;
+            color: #ccc;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            min-width: 95vw;
+            padding: 0;
+        }
+        .row {
+            display: flex;
+            flex: 1;
+        }
+        .chat-box {
+            flex: 1;
+            border-radius: 5px;
+            padding: 10px;
+            overflow-y: auto;
+            margin-bottom: 60px;
+            background-color: #111;
+            display: flex;
+            flex-direction: column-reverse;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+
+        *::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+        .chat-message {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            animation: fadeIn 0.5s ease;
+            max-width: 80%;
+        }
+        .chat-message-avatar {
+            margin-right: 10px;
+        }
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #666;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+        }
+        .message-content-wrapper {
+            background-color: #444;
+            border-radius: 8px;
+            padding: 10px;
+            flex: 1;
+        }
+        .sent-message {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+        .sent-message .chat-message-avatar {
+            margin-left: 10px;
+            margin-right: 0;
+        }
+        .sent-message .message-content-wrapper {
+            background-color: #4aa0ff;
+        }
+        .received-message {
+            align-self: flex-start;
+        }
+        .received-message .message-content-wrapper {
+            background-color: #444;
+        }
+        .username {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .timestamp {
+            font-size: 0.8rem;
+            color: #999;
+            margin-left: auto;
+        }
+        .message-content {
+            font-size: 1.1rem;
+            line-height: 1.4;
+            color: #fff;
+        }
+        .message-input-container {
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #222;
+            border-top: 1px solid #444;
+            z-index: 1000;
+        }
+        .message-input {
+            flex: 1;
+            margin-right: 10px;
+            border-radius: 20px;
+            padding: 10px 15px;
+            border: 1px solid #555;
+            color: #fff;
+            background-color: #333;
+            font-size: 1.1rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        .message-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        .send-button {
+            background-color: #fff;
+            color: #000;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .send-button:hover {
+            background-color: #f0f0f0;
+        }
+        .heart-button {
+            background-color: #000;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .heart-button:hover {
+            background-color: #222;
+        }
+        .heart-button:active {
+            transform: scale(0.95);
+        }
+        .theme-dark .chat-box {
+            background-color: #111;
+            border-color: #444;
+        }
+        .theme-dark .chat-message {
+            border-radius: 8px;
+        }
+        .theme-dark .sent-message .message-content-wrapper {
+            background-color: #007bff;
+        }
+        .theme-dark .received-message .message-content-wrapper {
+            background-color: #444;
+        }
+        .theme-dark .message-content {
+            color: #fff;
+        }
+        .theme-dark .timestamp {
+            color: #999;
+        }
+        .popup-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .popup-content {
+            background-color: #222;
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 90%;
+            text-align: center;
+        }
+        .popup-background, .popup-content {
+            animation: fadeIn 0.5s ease;
+        }
+        .popup-input, .popup-button {
+            display: block;
+            width: 100%;
+        }
+        .popup-input:focus {
+            outline: none;
+        }
+        .popup-input::placeholder {
+            color: #999;
+        }
+        .popup-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background-color: #333;
+            color: #fff;
+            font-size: 1.1rem;
+        }
+        .popup-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .popup-button:hover {
+            background-color: #0056b3;
+        }
+        .popup-button:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row" id="username-popup" style="display: flex; justify-content: center; align-items: center;">
+        <div class="popup-background">
+            <div class="popup-content">
+                <h5 style="color: #fff;">Enter Your Username</h5>
+                <input id="username-input" type="text" class="popup-input" placeholder="Enter your username">
+                <button class="popup-button" onclick="setUsername()">Set Username</button>
+            </div>
+        </div>
+    </div>
+    <div class="row" id="chat-section" style="display: none; flex: 1;">
+        <div class="col-12 d-flex flex-column justify-content-end">
+            <h3 class="text-center mt-4 mb-3" style="font-size: 2rem;">Global Chat</h3>
+            <div class="chat-box p-4" id="chat-box">
+                <!-- Messages will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+    <div class="message-input-container">
+        <input id="content" type="text" class="message-input" placeholder="Enter a message">
+        <button class="heart-button animate__animated animate__fadeInRight" onclick="sendHeart()"><i class="fas fa-heart"></i></button>
+        <button class="send-button animate__animated animate__fadeInRight" onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script>
+    var stompClient = null;
+    var username = null;
+
+    function setUsername() {
+        var usernameInput = document.getElementById('username-input').value.trim();
+        if (usernameInput) {
+            username = '@' + usernameInput; // Add @ symbol before username
+            document.getElementById('username-popup').style.display = 'none';
+            document.getElementById('chat-section').style.display = 'flex'; // Display chat section
+
+            connect();
+        } else {
+            alert('Please enter a valid username.');
+        }
+    }
+
+    function connect() {
+        var socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            stompClient.subscribe('/topic/messages', function (messageOutput) {
+                showMessage(JSON.parse(messageOutput.body));
+            });
+
+            // Fetch last 10 messages initially
+            fetchLast10Messages();
+        });
+    }
+
+    function fetchLast10Messages() {
+        fetch('/chat') // Assuming this endpoint returns the last 10 messages
+            .then(response => response.json())
+            .then(messages => {
+                messages.reverse(); // Reverse to show latest messages first
+                messages.forEach(message => showMessage(message));
+            })
+            .catch(error => console.error('Error fetching messages:', error));
+    }
+
+    function sendMessage() {
+        var content = document.getElementById('content').value.trim();
+        if (username && content) {
+            var message = {
+                username: username,
+                content: content
+            };
+            stompClient.send("/app/chat", {}, JSON.stringify(message));
+            document.getElementById('content').value = '';
+        }
+    }
+
+    function sendHeart() {
+        var heartMessage = {
+            username: username,
+            content: '❤️'
+        };
+        stompClient.send("/app/chat", {}, JSON.stringify(heartMessage));
+    }
+
+    document.getElementById('content').addEventListener('keydown', function (e) {
+        if (e.keyCode === 13) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+
+    function showMessage(message) {
+        var chatBox = document.getElementById('chat-box');
+        var messageElement = document.createElement('div');
+        messageElement.className = 'chat-message animate__animated animate__fadeInUp';
+        var formattedTimestamp = formatTimestamp(new Date(message.timestamp).toLocaleString()); // Format timestamp
+
+        var messageClass = message.username === username ? 'sent-message' : 'received-message';
+        messageElement.classList.add(messageClass);
+
+        // Generate avatar and username color based on username
+        var avatarColor = stringToColor(message.username);
+        var avatarInitial = message.username.charAt(1).toUpperCase();
+
+        messageElement.innerHTML =`
+            <div class="chat-message-avatar">
+                <div class="avatar" style="background-color: ${avatarColor};">${avatarInitial}</div>
+            </div>
+
+        <div class="message-content-wrapper">
+            <div>
+                <span class="username" style="color: ${avatarColor};">${message.username}</span> <span class="timestamp">${formattedTimestamp}</span>
+            </div>
+            <div class="message-content">${message.content}</div>
+
+        </div>
+        `;
+
+
+        // Append message to the top (start) of chat box
+        chatBox.insertAdjacentElement('afterbegin', messageElement);
+
+        window.scrollTo(0, document.body.scrollHeight);
+
+    }
+
+    // Generate a unique color based on a string (username)
+    function stringToColor(str) {
+        var hash = 0;
+        for (var i = 0; i < str.length; i++) {
+            hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        var color = '#';
+        for (var j = 0; j < 3; j++) {
+            var value = (hash >> (j * 8)) & 0xFF;
+            value = Math.min(value + 60, 255); // Avoid very dark colors
+            color += ('00' + value.toString(16)).substr(-2);
+        }
+        return color;
+    }
+    function formatTimestamp(timestamp) {
+        var date = new Date(timestamp);
+        var hours = date.getHours();
+        var minutes = date.getMinutes().toString().padStart(2, '0');
+        return `${hours}:${minutes}`;
+    }
+</script>
+</body>
+</html>

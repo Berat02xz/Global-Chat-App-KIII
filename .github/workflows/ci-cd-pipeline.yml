@@ -17,6 +17,8 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '17'
+          distribution: 'adopt'  # Specify the JDK distribution (e.g., adopt, zulu, temurin)
+          architecture: 'x64'
 
       - name: Cache Gradle packages
         uses: actions/cache@v2

@@ -55,11 +55,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - name: List root directories
+        run: ls -l /
+
       - name: Install kubectl
         run: |
           curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
           chmod +x ./kubectl
           sudo mv ./kubectl /usr/local/bin/kubectl
+
+      - name: List contents of k8s directory
+        run: ls -lR ./k8s
 
       - name: Start Minikube
         run: |
@@ -71,9 +77,6 @@ jobs:
           kubectl config use-context minikube
           kubectl cluster-info  # Optional: Check cluster info to verify connectivity
 
-      - name: List root directories
-        run: ls -l /
-
       - name: Deploy to Minikube
         run: |
-          kubectl apply -f k8s/deployment.yaml -f k8s/service.yaml
+          kubectl apply -f ./k8s/deployment.yaml -f ./k8s/service.yaml

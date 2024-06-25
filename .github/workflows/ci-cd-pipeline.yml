@@ -62,11 +62,9 @@ jobs:
           chmod +x ./kubectl
           sudo mv ./kubectl /usr/local/bin/kubectl
 
-      - name: List root directory contents
-        run: ls -l /
+      - name: Search for k8s directory
+        run: find /home /opt /usr /github/workspace -type d -name "k8s"
 
-      - name: List contents of k8s directory
-        run: ls -lR ./k8s
 
       - name: Start Minikube
         run: |
@@ -80,4 +78,4 @@ jobs:
 
       - name: Deploy to Minikube
         run: |
-          kubectl apply -f ./k8s/deployment.yaml -f ./k8s/service.yaml
+          kubectl apply -f /github/workspace/k8s/deployment.yaml -f /github/workspace/k8s/service.yaml

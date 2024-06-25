@@ -56,15 +56,14 @@ jobs:
     needs: build
 
     steps:
+      - name: Search for k8s directory
+        run: find / -type d -name "k8s" 2>/dev/null
+
       - name: Install kubectl
         run: |
           curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
           chmod +x ./kubectl
           sudo mv ./kubectl /usr/local/bin/kubectl
-
-      - name: Search for k8s directory
-        run: find /home /opt /usr /github/workspace -type d -name "k8s"
-
 
       - name: Start Minikube
         run: |

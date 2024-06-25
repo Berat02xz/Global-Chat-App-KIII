@@ -17,7 +17,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '17'
-          distribution: 'adopt'  # Specify the JDK distribution (e.g., adopt, zulu, temurin)
+          distribution: 'adopt'
           architecture: 'x64'
 
       - name: Cache Gradle packages
@@ -28,6 +28,9 @@ jobs:
             ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: ${{ runner.os }}-gradle
+
+      - name: Grant execute permission to gradlew
+        run: chmod +x ./gradlew
 
       - name: Gradle Build
         run: ./gradlew build --no-daemon
@@ -59,8 +62,7 @@ jobs:
           sudo mv ./kubectl /usr/local/bin/kubectl
 
       - name: Configure kubectl to use Minikube
-        run: |
-          minikube kubectl -- get po -A
+        run: minikube kubectl -- get po -A
 
       - name: Deploy to Minikube
         run: |

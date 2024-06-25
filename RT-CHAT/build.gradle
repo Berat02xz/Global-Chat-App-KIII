@@ -33,14 +33,17 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
-    // Spring Boot Starter Data JDBC
     implementation 'com.microsoft.sqlserver:mssql-jdbc:9.4.0.jre11' // SQL Server JDBC driver
-
-
-
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+jar {
+    enabled = true
+}
+
+springBoot {
+    mainClass.set('org.example.rtchat.RtChatApplication') // Set your main class here
 }

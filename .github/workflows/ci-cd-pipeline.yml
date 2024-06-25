@@ -57,12 +57,19 @@ jobs:
     steps:
       - name: Install kubectl
         run: |
-          curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+          curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
           chmod +x ./kubectl
           sudo mv ./kubectl /usr/local/bin/kubectl
 
+      - name: Start Minikube
+        run: |
+          minikube start --driver=docker --memory=4096 --cpus=2
+          minikube status
+
       - name: Configure kubectl to use Minikube
-        run: minikube kubectl -- get po -A
+        run: |
+          kubectl config use-context minikube
+          kubectl cluster-info  # Optional: Check cluster info to verify connectivity
 
       - name: Deploy to Minikube
         run: |

@@ -71,8 +71,8 @@ jobs:
           kubectl config use-context minikube
           kubectl cluster-info  # Optional: Check cluster info to verify connectivity
 
-      - name: List contents of k8s directory
-        run: ls -lR k8s
+      - name: List root directories
+        run: ls -l /
 
       - name: Deploy to Minikube
         run: |

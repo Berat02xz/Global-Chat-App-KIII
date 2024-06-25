@@ -49,7 +49,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/rt-chat:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/rt-chat-application:latest
 
   deploy:
     runs-on: ubuntu-latest

@@ -54,11 +54,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
-
     steps:
-      - name: Search for k8s directory
-        run: find / -type d -name "k8s" 2>/dev/null
-
       - name: Install kubectl
         run: |
           curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
@@ -77,4 +73,5 @@ jobs:
 
       - name: Deploy to Minikube
         run: |
-          kubectl apply -f /github/workspace/k8s/deployment.yaml -f /github/workspace/k8s/service.yaml
+          kubectl apply -f https://raw.githubusercontent.com/BeratAhmetaj/RT-Chat-KIII/master/k8s/deployment.yaml
+          kubectl apply -f https://raw.githubusercontent.com/BeratAhmetaj/RT-Chat-KIII/master/k8s/service.yaml

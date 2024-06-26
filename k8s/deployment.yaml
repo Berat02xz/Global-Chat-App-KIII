@@ -4,7 +4,7 @@ metadata:
   name: rt-chat-deployment
   namespace: rt-chat-cloud
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: rt-chat

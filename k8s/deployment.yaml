@@ -1,35 +1,35 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-app-deployment
-  namespace: rt-chat-local  # NAMESPACE
+  name: rt-chat-deployment
+  namespace: rt-chat-cloud
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: my-app
+      app: rt-chat
   template:
     metadata:
       labels:
-        app: my-app
+        app: rt-chat
     spec:
       imagePullSecrets:
-        - name: dockerhub-secret  # Reference the Docker Hub secret
+        - name: dockerhub-secret  # Ensure this secret exists and grants access to your Docker image
       containers:
-        - name: my-app
-          image: beratahmetaj/rt-chat-application:latest  # DOCKERIMAGE
+        - name: rt-chat
+          image: beratahmetaj/rt-chat-application:latest  # Replace with your Docker image and tag
           ports:
             - containerPort: 8080
           env:
             - name: DB_URL
-              value: jdbc:sqlserver://berat-finki.database.windows.net:1433;databaseName=RT-CHAT;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;
+              value: "jdbc:sqlserver://berat-finki.database.windows.net:1433;databaseName=RT-CHAT;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;"
             - name: SPRING_DATASOURCE_USERNAME
-              value: beratahmetaj02@berat-finki
+              value: beratahmetaj02@berat-finki  # Replace with your database username
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: db-secrets
-                  key: db-sa-password
+                  key: db-sa-password  # Ensure this secret exists with the correct key
             - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
               value: com.microsoft.sqlserver.jdbc.SQLServerDriver
             - name: SPRING_JPA_DATABASE_PLATFORM
@@ -38,14 +38,14 @@ spec:
               value: update
           envFrom:
             - secretRef:
-                name: my-app-secrets
+                name: rt-chat-secrets  # Ensure this Secret exists and contains necessary environment variables
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: app-config
-  namespace: rt-chat-local  #NAMESPACE
+  namespace: rt-chat-cloud
 data:
   app.properties: |
-    app.name=My Application
+    app.name=RT_CHAT_APP
     app.version=1.0.0

@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: my-app-service
-  namespace: rt-chat-local  # NAMESPACE SPECIFIED
+  name: rt-chat-service
+  namespace: rt-chat-cloud  # NAMESPACE SPECIFIED
 spec:
   selector:
-    app: my-app  # label match from deployment.yaml
+    app: rt-chat  # label match from deployment.yaml
   ports:
     - protocol: TCP
       port: 80

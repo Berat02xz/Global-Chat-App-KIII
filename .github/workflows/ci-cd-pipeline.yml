@@ -69,6 +69,8 @@ jobs:
           environment: azurecloud
           allow-no-subscriptions: false
           auth-type: SERVICE_PRINCIPAL
+          audience: api://AzureADTokenExchange
+
 
 
       - name: Set Azure subscription

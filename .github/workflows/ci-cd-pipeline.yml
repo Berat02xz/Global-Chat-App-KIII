@@ -59,6 +59,9 @@ jobs:
         uses: azure/CLI@v1
         with:
           azcliversion: latest
+          inlineScript: |
+            # Example Azure CLI command (replace with your actual commands)
+            az --version
 
       - name: Get AKS credentials
         run: az aks get-credentials --resource-group finki2 --name RTCHATCluster

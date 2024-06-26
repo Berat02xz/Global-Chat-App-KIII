@@ -14,7 +14,7 @@
 - **Docker**: Контенеризација на апликации.
 - **Docker Compose**: Дефинирање и управување на мулти-контенер Docker апликации.
 
-**Детален План на конструкција:** [Документ]()
+**Детален План на конструкција:** [Документ](https://github.com/BeratAhmetaj/RT-Chat-KIII/blob/master/Realtime%20Chat%20-%20Continuous%20Integration_Continous%20Delivery.pdf)
 
 ## Инсталација
 

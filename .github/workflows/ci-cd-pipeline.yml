@@ -53,18 +53,14 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build
     steps:
-      - name: Install Azure CLI
+      - name: Install Azure CLI and Login
         uses: azure/CLI@v1
         with:
           azcliversion: latest
           inlineScript: |
-            # Example Azure CLI command (replace with your actual commands)
-            az --version
-
-      - name: Get AKS credentials
-        run: az aks get-credentials --resource-group finki2 --name RTCHATCluster
+            az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+            az aks get-credentials --resource-group finki2 --name RTCHATCluster
 
       - name: Create namespace if not exists
         run: kubectl create namespace rt-chat-cloud --dry-run=client -o yaml | kubectl apply -f -

@@ -53,22 +53,20 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Debug Output
-        run: |
-          echo "Azure Subscription ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}"
-          echo "Azure Environment: azurecloud"
-          az --version  # Check Azure CLI version
-          az account list --output table  # Verify Azure account details
-          
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Azure Login using Managed Identity
         uses: azure/login@v2
         with:
           enable-AzPSSession: false
           environment: azurecloud
-          allow-no-subscriptions: false
+          allow-no-subscriptions: true
           auth-type: IDENTITY
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
 
       - name: Install kubectl
         run: |
@@ -102,4 +100,4 @@ jobs:
         run: kubectl get pods -n rt-chat-cloud
 
       - name: Get Services
-        run: kubectl get services -n rt-chat-cloudctl get services -n rt-chat-cloud
+        run: kubectl get services -n rt-chat-cloud

@@ -21,7 +21,7 @@
 1. Клонирајте го репозиториумот:
 ```bash
 git clone https://github.com/BeratAhmetaj/RT-Chat-KIII.git
-docker build -t <вашето-корисничко-име>/rt-chat-application:latest .
+docker build -t beratahmetaj/rt-chat-application:latest .
 ```
 
 3. Покренете ги контејнерите

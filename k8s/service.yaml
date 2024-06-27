@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: rt-chat-service
-  namespace: rt-chat-cloud  
+  namespace: rt-chat-cloud
 spec:
   selector:
     app: rt-chat

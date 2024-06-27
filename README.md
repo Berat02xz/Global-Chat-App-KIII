@@ -14,8 +14,7 @@ This project involves the development of a chat application system using Spring 
 - **Docker**: Containerization of applications.
 - **Docker Compose**: Define and manage multi-container Docker applications
   
-**Detailed Explanation[MK]** [Document](https://github.com/BeratAhmetaj/RT-Chat-KIII/blob/master/Realtime%20Chat%20-%20Continuous%20Integration_Continous%20Delivery.pdf)
-  
+
 ![Graph](graph.png)
 
 
@@ -32,3 +31,6 @@ docker build -t beratahmetaj/rt-chat-application:latest .
 ```bash
 docker-compose up
 ```
+
+**Detailed Explanation[MK]** [Document](https://github.com/BeratAhmetaj/RT-Chat-KIII/blob/master/Realtime%20Chat%20-%20Continuous%20Integration_Continous%20Delivery.pdf)
+  

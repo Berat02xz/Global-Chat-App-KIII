@@ -1,6 +1,8 @@
 ![fcse_logo](https://github.com/BeratAhmetaj/Museudonia/blob/main/Gif%20Animations/Logo_FINKI_UKIM_EN/Logo_FINKI_UKIM_EN_00000.png)
 
-## Project Goal
+## Course: Continuous Delivery & Continuous Integration
+
+**Project Goal:**
 This project involves the development of a chat application system using Spring Boot, Azure PostgreSQL cloud-hosted database, Gradle, Thymeleaf template engine, and WebSocket. The application is designed to be DevOps-friendly by utilizing CI/CD pipeline, GitHub Actions, Kubernetes manifests, Docker, Docker Compose, secrets management, and other DevOps tools. This project is part of the course "Continuous Integration and Continuous Delivery" at our faculty.
 
 ![Graph](readme.gif)
@@ -24,16 +26,17 @@ This project involves the development of a chat application system using Spring 
 
 ## Install
 
-1. Clone the repo:
+Clone the repo:
 ```bash
 git clone https://github.com/BeratAhmetaj/RT-Chat-KIII.git
 docker build -t beratahmetaj/rt-chat-application:latest .
 ```
 
-3. Start the containers
+Start the containers
 ```bash
 docker-compose up
 ```
+</br>
 
 ## Detailed Explanation[MK] [Document](https://github.com/BeratAhmetaj/RT-Chat-KIII/blob/master/Realtime%20Chat%20-%20Continuous%20Integration_Continous%20Delivery.pdf)
   

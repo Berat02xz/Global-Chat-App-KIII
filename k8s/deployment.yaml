@@ -14,22 +14,22 @@ spec:
         app: rt-chat
     spec:
       imagePullSecrets:
-        - name: dockerhub-secret  # Ensure this secret exists and grants access to your Docker image
+        - name: dockerhub-secret
       containers:
         - name: rt-chat
-          image: beratahmetaj/rt-chat-application:latest  # Replace with your Docker image and tag
+          image: beratahmetaj/rt-chat-application:latest
           ports:
             - containerPort: 8080
           env:
             - name: DB_URL
               value: "jdbc:sqlserver://berat-finki.database.windows.net:1433;databaseName=RT-CHAT;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;"
             - name: SPRING_DATASOURCE_USERNAME
-              value: beratahmetaj02@berat-finki  # Replace with your database username
+              value: beratahmetaj02@berat-finki
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: db-secrets
-                  key: db-sa-password  # Ensure this secret exists with the correct key
+                  key: db-sa-password
             - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
               value: com.microsoft.sqlserver.jdbc.SQLServerDriver
             - name: SPRING_JPA_DATABASE_PLATFORM
@@ -38,7 +38,7 @@ spec:
               value: update
           envFrom:
             - secretRef:
-                name: rt-chat-secrets  # Ensure this Secret exists and contains necessary environment variables
+                name: rt-chat-secrets
 ---
 apiVersion: v1
 kind: ConfigMap

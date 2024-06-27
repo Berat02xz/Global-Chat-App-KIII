@@ -1,30 +1,34 @@
 ![fcse_logo](https://github.com/BeratAhmetaj/Museudonia/blob/main/Gif%20Animations/Logo_FINKI_UKIM_EN/Logo_FINKI_UKIM_EN_00000.png)
 
-Ова е проект за развој на систем за чет апликација користејќи Spring Boot, Azure Postgres база на податоци хостирана на облак, Gradle, Thymeleaf темплате енџин и WebSocket. Апликацијата е направена DevOps-friendly користејќи CI/CD pipeline, GitHub Actions, Kubernetes манифести, Docker и Docker Compose, тајни и други DevOps алатки. Овој проект е дел од предметот "Континуирана интеграција и континуирана испорака" на нашиот факултет.
+This project involves the development of a chat application system using Spring Boot, Azure PostgreSQL cloud-hosted database, Gradle, Thymeleaf template engine, and WebSocket. The application is designed to be DevOps-friendly by utilizing CI/CD pipeline, GitHub Actions, Kubernetes manifests, Docker, Docker Compose, secrets management, and other DevOps tools. This project is part of the course "Continuous Integration and Continuous Delivery" at our faculty.
 
-## Технологии
+## Technologies
 
-- **Spring Boot**: Фрејмворк за изградба на апликации со минимална конфигурација.
-- **Azure Postgres**: База на податоци хостирана на облак.
-- **Gradle**: Алатка за автоматизација на изградување.
-- **Thymeleaf**: Темплате енџин за рендерирање на веб страни.
-- **WebSocket**: Протокол за реално време комуникација.
-- **CI/CD**: Континуирана интеграција и континуирана испорака со GitHub Actions.
-- **Kubernetes**: Оркестрација на контејнери.
-- **Docker**: Контенеризација на апликации.
-- **Docker Compose**: Дефинирање и управување на мулти-контенер Docker апликации.
+- **Spring Boot**: Framework for building applications with minimal configuration.
+- **Azure Postgres**: Cloud-hosted database.
+- **Gradle**: automation tool.
+- **Thymeleaf**: Template engine for rendering web pages.
+- **WebSocket**: Protocol for real-time communication.
+- **CI/CD**: Continuous Integration and Continuous Delivery using GitHub Actions.
+- **Kubernetes**: Container orchestration.
+- **Docker**: Containerization of applications.
+- **Docker Compose**: Define and manage multi-container Docker applications
+  
+**Detailed Explanation[MK]** [Document](https://github.com/BeratAhmetaj/RT-Chat-KIII/blob/master/Realtime%20Chat%20-%20Continuous%20Integration_Continous%20Delivery.pdf)
+  
+![Graph](graph.png)
 
-**Детален План на конструкција:** [Документ](https://github.com/BeratAhmetaj/RT-Chat-KIII/blob/master/Realtime%20Chat%20-%20Continuous%20Integration_Continous%20Delivery.pdf)
 
-## Инсталација
 
-1. Клонирајте го репозиториумот:
+## Install
+
+1. Clone the repo:
 ```bash
 git clone https://github.com/BeratAhmetaj/RT-Chat-KIII.git
 docker build -t beratahmetaj/rt-chat-application:latest .
 ```
 
-3. Покренете ги контејнерите
+3. Start the containers
 ```bash
 docker-compose up
 ```

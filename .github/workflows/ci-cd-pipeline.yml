@@ -105,3 +105,4 @@ jobs:
 
       - name: Get Kubernetes Namespaces
         run: kubectl get namespaces
+
